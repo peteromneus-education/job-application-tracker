@@ -7,14 +7,14 @@ internal class Program
 
     private static void Main(string[] args)
     {
-        Console.Title = "Job Application Tracker";
+        Console.Title = "Job Application Tracker"; // sätter titeln på konsolfönstret
 
         char mainMenuChoice;
         bool keepDisplayingMenu = true;
 
         JobManager manager = new(); // skapar en instans av JobManager-klassen som hanterar listan med ansökningar
 
-        // åtta exempel som skapas vid varje programstart, så att man slipper skapa nya varje gång programmet körs 🙂
+        // åtta exempel som skapas vid varje programstart, så att man slipper skapa nya varje gång programmet körs
         AddExample("Microshift", ".NET Developer", 38000,
             3, ApplicationStatus.Applied, null);
         AddExample("Hogio", "Junior Developer", 35000,
@@ -35,7 +35,7 @@ internal class Program
         // Huvudmeny
         while (keepDisplayingMenu)
         {
-            DisplayMenu();
+            DisplayMenu(); // kallar in metoden DisplayMenu som rensar konsolen och visar huvudmenyn med alternativ
 
             mainMenuChoice = Console.ReadKey(true).KeyChar;
 
@@ -46,44 +46,44 @@ internal class Program
                     Console.ReadKey();
                     break;
 
-                case '1': // lägg till en ny ansökning
+                case '1':
                     Console.Clear();
-                    Utilities.FormatHeading("Add new application\n");
+                    Utilities.FormatHeading("Add new application\n"); // kallar in metoden FormatHeading som formaterar rubriken
 
-                    string companyName = Utilities.ValidateString("Company: ");
+                    string companyName = Utilities.ValidateString("Company: "); // kallar in metoden ValidateString som validerar att användaren skriver in text
                     string positionTitle = Utilities.ValidateString("Title: ");
-                    int salaryExpectation = Utilities.ValidateInteger("Expected salary: ");
-                    bool isConfirmed = JobManager.ConfirmAddApplication(companyName, positionTitle, salaryExpectation);
+                    int salaryExpectation = Utilities.ValidateInteger("Expected salary: "); // kallar in metoden ValidateInteger som validerar att användaren skriver in ett heltal
+                    bool isConfirmed = JobManager.ConfirmAddApplication(companyName, positionTitle, salaryExpectation); // kallar in metoden ConfirmAddApplication som ber användaren att bekräfta innan hen lägger in ansökningen i listan
 
                     if (isConfirmed)
                     {
-                        manager.AddJob(companyName, positionTitle, salaryExpectation);
+                        manager.AddJob(companyName, positionTitle, salaryExpectation); // kallar in metoden AddJob som lägger till ansökningen i listan
                         Utilities.FormatSuccess("\nApplication added successfully!");
                         ReturnMessage();
                     }
                     break;
 
-                case '2': // ändra status på en ansökning
+                case '2':
                     Console.Clear();
-                    manager.UpdateStatus();
+                    manager.UpdateStatus(); // kallar in metoden UpdateStatus som låter användaren ändra status på en ansökning
                     ReturnMessage();
                     break;
 
-                case '3': // radera en ansökning
-                    manager.DeleteApplication();
+                case '3':
+                    manager.DeleteApplication(); // kallar in metoden DeleteApplication som låter användaren ta bort en ansökning
                     ReturnMessage();
                     break;
 
-                case '4': // visa alla ansökningar och låt användaren filtrera eller sortera
-                    ShowApplicationsMenu(manager);
+                case '4':
+                    ShowApplicationsMenu(manager); // kallar in metoden ShowApplicationsMenu som fungerar som en undermeny till "Show all applications" och låter användaren filtrera eller sortera i listan med ansökningar
                     break;
 
-                case '5': // visa statistik
-                    manager.ShowStatistics();
+                case '5':
+                    manager.ShowStatistics(); // kallar in metoden ShowStatistics som visar diverse statistik över ansökningarna
                     ReturnMessage();
                     break;
 
-                case '0': // avsluta programmet
+                case '0':
                     keepDisplayingMenu = false;
                     Console.WriteLine();
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -110,13 +110,13 @@ internal class Program
             Utilities.FormatPrompt("\nChoose an option by pressing the corresponding number key.");
         }
 
-        static void ReturnMessage()
+        static void ReturnMessage() // gjorde en egen metod av detta eftersom meddelandet används ofta
         {
             Utilities.FormatPrompt("\nPress a key to return to the main menu...");
             Console.ReadKey(true);
         }
 
-        static void ShowApplicationsMenu(JobManager manager) // fungerar som en undermeny till "Show all applications" och låter användaren filtrera eller sortera i listan med ansökningar
+        static void ShowApplicationsMenu(JobManager manager)
         {
             if (manager.ApplicationsList.Count == 0)
             {
@@ -128,7 +128,7 @@ internal class Program
 
             while (true)
             {
-                manager.ShowAllApplications();
+                manager.ShowAll(); // kallar in metoden ShowAll som visar alla ansökningar i listan
 
                 Console.WriteLine("\nFiltering and sorting:");
                 Console.WriteLine(
@@ -150,7 +150,7 @@ internal class Program
                         break;
 
                     case '3':
-                        manager.ShowUnansweredApplications();
+                        manager.ShowUnansweredApplications(); // kallar in metoden ShowUnansweredApplications som visar ansökningar som inte har fått svar på mer än 14 dagar
                         break;
 
                     case '0':
@@ -166,7 +166,7 @@ internal class Program
             }
         }
 
-        static void ShowStatusFilterMenu(JobManager manager)
+        static void ShowStatusFilterMenu(JobManager manager) // metoden låter användaren filtrera ansökningarna efter status
         {
             Console.Clear();
             Utilities.FormatHeading("Filter by status:\n");
@@ -185,19 +185,19 @@ internal class Program
                 switch (choice)
                 {
                     case '1':
-                        manager.FilterByStatus(JobApplication.ApplicationStatus.Applied);
-                        return; // jag använder return här för att gå tillbaka till ShowApplicationsMenu efter att ha filtrerat listan
+                        manager.FilterByStatus(ApplicationStatus.Applied); // kallar in metoden FilterByStatus som filtrerar ansökningarna efter status
+                        return; // använder return här för att gå tillbaka till ShowApplicationsMenu-metoden efter att ha filtrerat ansökningarna
 
                     case '2':
-                        manager.FilterByStatus(JobApplication.ApplicationStatus.Interview);
+                        manager.FilterByStatus(ApplicationStatus.Interview);
                         return;
 
                     case '3':
-                        manager.FilterByStatus(JobApplication.ApplicationStatus.Offer);
+                        manager.FilterByStatus(ApplicationStatus.Offer);
                         return;
 
                     case '4':
-                        manager.FilterByStatus(JobApplication.ApplicationStatus.Rejected);
+                        manager.FilterByStatus(ApplicationStatus.Rejected);
                         return;
 
                     case '0':
@@ -210,16 +210,16 @@ internal class Program
             }
         }
 
-        void AddExample(string companyName, string positionTitle, int salaryExpectation, int appliedDaysAgo, ApplicationStatus status, int? respondedDaysAgo)
+        void AddExample(string companyName, string positionTitle, int salaryExpectation, int appliedDaysAgo, ApplicationStatus status, int? respondedDaysAgo) // metoden skapar exempelansökningar som läggs till i listan med ansökningar
         {
             JobApplication application = new(companyName, positionTitle, salaryExpectation) // skapar en ny instans av JobApplication-klassen
             {
                 ApplicationDate = DateTime.Today.AddDays(-appliedDaysAgo),
                 Status = status,
-                ResponseDate = respondedDaysAgo.HasValue ? DateTime.Today.AddDays(-respondedDaysAgo.Value) : null
+                ResponseDate = respondedDaysAgo.HasValue ? DateTime.Today.AddDays(-respondedDaysAgo.Value) : null // villkor som sätter ResponseDate till null om respondedDaysAgo är null, annars sätter den ResponseDate till dagens datum minus respondedDaysAgo
             };
 
-            manager.ApplicationsList.Add(application);
+            manager.ApplicationsList.Add(application); // lägger till ansökningen i listan med ansökningar
         }
     }
 }
