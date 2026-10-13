@@ -1,9 +1,10 @@
 ﻿namespace job_application_tracker
 {
-    internal class Utilities // innehåller funktioner för validering och formatering
+
+    internal class Utilities // klass som innehåller metoder för att läsa in och validera användarinput, samt formatera text i konsolen
     {
         // Metoder
-        public static char ReadCharacter(string prompt)
+        public static char ReadCharacter(string prompt) // metod som läser in ett tecken (char) från användaren och returnerar det
         {
             FormatPrompt(prompt);
             char value = Console.ReadKey(true).KeyChar;
@@ -11,14 +12,14 @@
             return value;
         }
 
-        public static int ValidateInteger(string prompt)
+        public static int ValidateInteger(string prompt) // metod som läser in ett heltal (int) från användaren och returnerar det
         {
             while (true)
             {
-                FormatPrompt(prompt);
-                string? input = Console.ReadLine();
+                FormatPrompt(prompt); // prompt är vad som ska skrivas ut i konsolen innan användaren skriver in sitt svar
+                string? input = Console.ReadLine(); // input är det som användaren skriver in i konsolen
 
-                if (int.TryParse(input, out int value)
+                if (int.TryParse(input, out int value) // value är det som användaren skriver in i konsolen, och TryParse försöker konvertera det till ett heltal (int)
                     && value > 0)
                 {
                     return value;
@@ -27,7 +28,7 @@
             }
         }
 
-        public static string ValidateString(string prompt)
+        public static string ValidateString(string prompt) // metod som läser in en sträng (string) från användaren och returnerar det
         {
             while (true)
             {
