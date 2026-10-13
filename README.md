@@ -29,6 +29,8 @@ Programmet navigeras genom menyval i en huvudmeny och dess undermenyer.
 
 ## Körinstruktion
 
+Kräver .NET 10 SDK.
+
 Vid programstart skapas åtta fiktiva exempelansökningar. Ändringar finns bara i arbetsminnet och försvinner när programmet avslutas.
 
 ## Checklista för uppgiftskraven
