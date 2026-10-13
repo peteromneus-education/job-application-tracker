@@ -1,11 +1,7 @@
 # Job Application Tracker
 
----
-typ:	inlämningsuppgift
-kurs:	Objektorienterad programmering, grund
-namn:	Peter Omnéus
-datum:	2026-10-13
----
+Peter Omnéus
+2026-10-13
 
 ## Projektbeskrivning
 
