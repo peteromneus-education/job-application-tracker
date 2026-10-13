@@ -17,9 +17,9 @@
         public ApplicationStatus Status { get; set; } = ApplicationStatus.Applied; // standerdvärdet är satt till Applied
 
         // Methods
-        public static int GetDaysSinceApplied(DateTime applicationDate) // enkel metod som räknar ut hur många dagar det har gått sedan man skickade in sin ansökan
+        public int GetDaysSinceApplied() // enkel metod som räknar ut hur många dagar det har gått sedan man skickade in sin ansökan
         {
-            return (DateTime.Today - applicationDate).Days;
+            return (DateTime.Today - ApplicationDate.Date).Days;
         }
 
         public string GetSummary() // metod som returnerar en sträng med information om jobbansökan
