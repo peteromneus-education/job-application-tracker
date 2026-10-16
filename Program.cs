@@ -214,9 +214,9 @@ internal class Program
         {
             JobApplication application = new(companyName, positionTitle, salaryExpectation) // skapar en ny instans av JobApplication-klassen
             {
-                ApplicationDate = DateTime.Today.AddDays(-appliedDaysAgo),
+                ApplicationDate = DateTime.Today.AddDays(- appliedDaysAgo), // sätter ApplicationDate till dagens datum minus appliedDaysAgo för att simulera att ansökningen skickades in för appliedDaysAgo dagar sedan
                 Status = status,
-                ResponseDate = respondedDaysAgo.HasValue ? DateTime.Today.AddDays(-respondedDaysAgo.Value) : null // villkor som sätter ResponseDate till null om respondedDaysAgo är null, annars sätter den ResponseDate till dagens datum minus respondedDaysAgo
+                ResponseDate = respondedDaysAgo.HasValue ? DateTime.Today.AddDays(- respondedDaysAgo.Value) : null // villkor som sätter ResponseDate till null om respondedDaysAgo är null, annars sätter den ResponseDate till dagens datum minus respondedDaysAgo för att simulera att ansökningen fick svar för respondedDaysAgo dagar sedan
             };
 
             manager.ApplicationsList.Add(application); // lägger till ansökningen i listan med ansökningar
