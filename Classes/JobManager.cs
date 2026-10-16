@@ -210,7 +210,9 @@ namespace job_application_tracker.Classes
                 return;
             }
 
-            List<JobApplication> filteredApplications = ApplicationsList.OrderBy(application => application.ApplicationDate).ToList();
+            List<JobApplication> filteredApplications = ApplicationsList
+                .OrderBy(application => application.ApplicationDate)
+                .ToList();
 
             foreach (JobApplication application in filteredApplications)
             {
