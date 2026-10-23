@@ -1,4 +1,5 @@
-﻿using job_application_tracker;
+﻿using System.Text.Json;
+using job_application_tracker;
 using job_application_tracker.Classes;
 using static job_application_tracker.Classes.JobApplication;
 
@@ -14,23 +15,30 @@ internal class Program
 
         JobManager manager = new(); // skapar en instans av JobManager-klassen som hanterar listan med ansökningar
 
+        try
+        {
+            manager.LoadApplications();
+        }
+        catch (FileNotFoundException)
+        {
+            Utilities.FormatError("Ingen sparfil hittades. Programmet börjar med en tom lista.");
+        }
+        catch (JsonException)
+        {
+            Utilities.FormatError("Sparfilen innehåller ogiltig JSON. Programmet avslutas utan att spara.");
+            Console.ReadKey(true);
+            return;
+        }
+
         // åtta exempel som skapas vid varje programstart, så att man slipper skapa nya varje gång programmet körs
-        AddExample("Microshift", ".NET Developer", 38000,
-            3, ApplicationStatus.Applied, null);
-        AddExample("Hogio", "Junior Developer", 35000,
-            14, ApplicationStatus.Applied, null);
-        AddExample("Orange", "Backend Developer", 39000,
-            15, ApplicationStatus.Applied, null);
-        AddExample("LoQ", "C# Developer", 37000,
-            30, ApplicationStatus.Applied, null);
-        AddExample("2bits", "Software Developer", 40000,
-            20, ApplicationStatus.Interview, 12);
-        AddExample("Barnfire", "Fullstack Developer", 41000,
-            35, ApplicationStatus.Offer, 10);
-        AddExample("InfiNOT Code", "Integration Developer", 39000,
-            25, ApplicationStatus.Rejected, 18);
-        AddExample("IT Dreamz", "CTO", 3000000,
-            0, ApplicationStatus.Interview, 0);
+        // AddExample("Microshift", ".NET Developer", 38000, 3, ApplicationStatus.Applied, null);
+        // AddExample("Hogio", "Junior Developer", 35000, 14, ApplicationStatus.Applied, null);
+        // AddExample("Orange", "Backend Developer", 39000, 15, ApplicationStatus.Applied, null);
+        // AddExample("LoQ", "C# Developer", 37000, 30, ApplicationStatus.Applied, null);
+        // AddExample("2bits", "Software Developer", 40000, 20, ApplicationStatus.Interview, 12);
+        // AddExample("Barnfire", "Fullstack Developer", 41000, 35, ApplicationStatus.Offer, 10);
+        // AddExample("InfiNOT Code", "Integration Developer", 39000, 25, ApplicationStatus.Rejected, 18);
+        // AddExample("IT Dreamz", "CTO", 3000000, 0, ApplicationStatus.Interview, 0);
 
         // Huvudmeny
         while (keepDisplayingMenu)
@@ -87,9 +95,10 @@ internal class Program
                     keepDisplayingMenu = false;
                     Console.WriteLine();
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.WriteLine("\nPress a key to exit the program...");
+                    Console.WriteLine("\nPress a key to save and exit...");
                     Console.ResetColor();
                     Console.ReadKey(true);
+                    manager.SaveApplications();
                     break;
             }
         }
@@ -130,8 +139,7 @@ internal class Program
             {
                 manager.ShowAll(); // kallar in metoden ShowAll som visar alla ansökningar i listan
 
-                Console.WriteLine("\nFiltering and sorting:");
-                Console.WriteLine(
+                Console.WriteLine("\nFiltering and sorting:\n" +
                     "\n1. Filter by status" +
                     "\n2. Sort by date" +
                     "\n3. Show applications due for a follow-up" +
@@ -210,7 +218,7 @@ internal class Program
             }
         }
 
-        void AddExample(string companyName, string positionTitle, int salaryExpectation, int appliedDaysAgo, ApplicationStatus status, int? respondedDaysAgo) // metoden skapar exempelansökningar som läggs till i listan med ansökningar
+        void AddExample(string companyName, string positionTitle, int salaryExpectation, int appliedDaysAgo, ApplicationStatus status, int? respondedDaysAgo) // metoden skapar exempelansökningar som läggs till i listan med ansökningar. AddJob-metoden som ligger i JobManager-klassen tar inte alla de parametrar som en komplett ansökning behöver.
         {
             JobApplication application = new(companyName, positionTitle, salaryExpectation) // skapar en ny instans av JobApplication-klassen
             {

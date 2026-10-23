@@ -1,9 +1,10 @@
-﻿using static job_application_tracker.Classes.JobApplication;
+﻿using System.Text.Json;
+using static job_application_tracker.Classes.JobApplication;
 
 namespace job_application_tracker.Classes
 {
 
-    public class JobManager
+    public class JobManager // klass som hanterar alla jobbansökningar
     {
         // Properties
         public List<JobApplication> ApplicationsList = []; // initialiserar en lista av typen Applications som kommer att innehålla alla jobbansökningar
@@ -13,6 +14,7 @@ namespace job_application_tracker.Classes
         {
             JobApplication application = new(companyName, positionTitle, salaryExpectation);
             ApplicationsList.Add(application);
+            SaveApplications();
         }
 
         public static bool ConfirmAddApplication(string companyName, string positionTitle, int salaryExpectation) // metod som visar användaren den information som har matats in och frågar om den är korrekt. Om användaren bekräftar med 'Y' returnerar metoden true, annars returnerar den false.
@@ -111,8 +113,10 @@ namespace job_application_tracker.Classes
             if (selectedApplication.Status != ApplicationStatus.Applied && selectedApplication.ResponseDate == null)
             {
                 selectedApplication.ResponseDate = DateTime.Today;
-                Console.WriteLine($"Response date updated to {selectedApplication.ResponseDate:yyyy-MM-dd}");
+                Utilities.FormatSuccess($"Response date updated to {selectedApplication.ResponseDate:yyyy-MM-dd}");
             }
+
+            SaveApplications();
         }
 
         public void DeleteApplication() // metod som tar bort en ansökan från listan. Den visar alla ansökningar, låter användaren välja en ansökan att ta bort och ber om bekräftelse innan den tas bort.
@@ -235,7 +239,7 @@ namespace job_application_tracker.Classes
                 .Average();
 
             double averageResponseDaysRounded = Math.Round(averageResponseDays, 0);
-            bool hasResponses = ApplicationsList.Any(application => application.ResponseDate.HasValue); // kontrollerar om en ansökan har ett svar och använder bool-variabeln i villkoret på rad 253
+            bool hasResponses = ApplicationsList.Any(application => application.ResponseDate.HasValue); // kontrollerar om en ansökan har ett svar och använder bool-variabeln i villkoret nedan
 
             int applied = ApplicationsList
                 .Count(application => application.Status == ApplicationStatus.Applied);
@@ -284,6 +288,30 @@ namespace job_application_tracker.Classes
                 int index = ApplicationsList.IndexOf(application);
                 Console.WriteLine($"{index + 1} - {application.GetSummary()}");
             }
+        }
+        public void SaveApplications()
+        {
+            try
+            {
+                string jsonApplications = JsonSerializer.Serialize(ApplicationsList);
+                File.WriteAllText("applications.json", jsonApplications);
+                Utilities.FormatSuccess("Changes saved!");
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Utilities.FormatError("Ändringarna finns bara i minnet. Programmet saknar behörighet att skriva till sparfilen.");
+            }
+            catch (IOException)
+            {
+                Utilities.FormatError("Ett filfel uppstod. Ändringarna kunde inte sparas och finns bara i minnet.");
+            }
+        }
+
+        public void LoadApplications()
+        {
+            string json = File.ReadAllText("applications.json");
+            List<JobApplication>? applications = JsonSerializer.Deserialize<List<JobApplication>>(json);
+            ApplicationsList = applications ?? [];
         }
     }
 }
